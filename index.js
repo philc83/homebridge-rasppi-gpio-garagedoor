@@ -1,6 +1,9 @@
 var fs = require('fs');
 var Service, Characteristic, DoorState; // set in the module.exports, from homebridge
 var process = require('process');
+var pfio = require("piface");
+ 
+pfio.init();
 
 module.exports = function(homebridge) {
   Service = homebridge.hap.Service;
@@ -146,11 +149,11 @@ RaspPiGPIOGarageDoorAccessory.prototype = {
   },
 
   readPin: function(pin) {
-      return parseInt(fs.readFileSync("/sys/class/gpio/gpio"+pin+"/value", "utf8").trim());
+      return pfio.digital_read(pin);
   },
 
   writePin: function(pin,val) {
-      fs.writeFileSync("/sys/class/gpio/gpio"+pin+"/value", val.toString());
+      pfio.digital_write(pin, val);
   },
 
   isClosed: function() {
